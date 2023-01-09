@@ -16,6 +16,7 @@ import {MatCardModule} from '@angular/material/card';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatIconModule} from '@angular/material/icon';
 import {MatExpansionModule} from '@angular/material/expansion';
+import { PostService } from './posts/post.service';
 
 
 @NgModule({
@@ -37,7 +38,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
     MatIconModule,
     MatExpansionModule
   ],
-  providers: [],
+  providers: [PostService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
