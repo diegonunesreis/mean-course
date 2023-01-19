@@ -7,7 +7,6 @@ textarea {
 }
 
 button {
-  width: 50%;
   margin: auto;
 }
 
@@ -18,4 +17,8 @@ form {
 
 mat-spinner {
   margin: auto;
+}
+
+input[type="file"] {
+  visibility: hidden;
 }
