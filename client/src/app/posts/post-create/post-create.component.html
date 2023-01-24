@@ -1,7 +1,7 @@
 <mat-card>
   <mat-spinner *ngIf="isLoading"></mat-spinner>
   <form [formGroup]="form!"
-    (submit)="onAddPost()">
+    (submit)="onSavePost()">
     <mat-form-field appearance="fill">
       <mat-label>Post Title</mat-label>
       <input
@@ -18,7 +18,14 @@
         (click)="filePicker.click()">
         Pick Image
       </button>
-      <input type="file" #filePicker>
+      <input
+        type="file" 
+        #filePicker 
+        (change)="onImagePicked($event)"
+        name="image">
+    </div>
+    <div class="image-preview" *ngIf="imgPreview && imgPreview !== '' && form.get('image').valid">
+      <img [src]="imgPreview" [alt]="form.value.title">
     </div>
     <mat-form-field appearance="fill">
       <mat-label>Post content</mat-label>

@@ -4,6 +4,7 @@ import { ActivatedRoute, ParamMap, Route } from "@angular/router";
 import { Post } from "../post.model";
 import { PostService } from "../post.service";
 import { Router } from "@angular/router";
+import { mimeType } from "./mime-type.validator";
 
 @Component({
   selector: 'app-post-create',
@@ -14,11 +15,11 @@ export class PostCreateComponent implements OnInit {
   enteredTitle = '';
   enteredContent = '';
   private editMode = false;
-  private postId: string | null = null;
+  private postId: string;
   isLoading = false;
-  post: Post | null = null;
-  form: FormGroup | undefined;
-
+  post: Post;
+  form: FormGroup;
+  imgPreview: string;
 
   constructor(
     private postsService: PostService,
@@ -27,7 +28,7 @@ export class PostCreateComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.createForm(); 
+    this.createForm();
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       if (paramMap.has('postId')) {
         this.editMode = true;
@@ -36,8 +37,7 @@ export class PostCreateComponent implements OnInit {
         this.postsService.getPost(this.postId!).subscribe((res) => {
           this.isLoading = false
           this.post = { id: res._id, title: res.title, content: res.content };
-          console.log(this.post);
-          this.form?.setValue({ title: this.post.title, content: this.post.content});
+          this.form.setValue({ title: this.post.title, content: this.post.content, image: null });
         });
       }
     });
@@ -52,22 +52,42 @@ export class PostCreateComponent implements OnInit {
       'content': new FormControl(
         null,
         { validators: [Validators.required] }
+      ),
+      'image': new FormControl(
+        null,
+        {
+          validators: [Validators.required],
+          asyncValidators: [mimeType]
+        }
       )
     });
   }
 
-  onAddPost() {
-    if (this.form?.invalid) {
+  onImagePicked(event: Event) {
+    const file = (event.target as HTMLInputElement).files[0];
+    this.form.patchValue({ image: file });
+    this.form.get('image').updateValueAndValidity();
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imgPreview = reader.result.toString();
+    };
+    reader.readAsDataURL(file);
+
+  }
+
+  onSavePost() {
+    if (this.form.invalid) {
       return;
     }
     this.isLoading = true;
     if (!this.editMode) {
-      this.postsService.addPost(this.form?.value.title, this.form?.value.content);
+      this.postsService.addPost(this.form.value.title, this.form.value.content);
     }
     else {
-      this.postsService.updatePost(this.postId!, this.form?.value.title, this.form?.value.content);
+      this.postsService.updatePost(this.postId!, this.form.value.title, this.form.value.content);
     }
-    this.form?.reset();
+    this.form.reset();
     this.router.navigate(['/']);
   }
 }
