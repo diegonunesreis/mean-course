@@ -25,9 +25,13 @@ input[type="file"] {
 
 .image-preview {
   height: 5rem;
-  margin: 1rem 0;
+  margin-bottom: 1rem;
 }
 
 .image-preview img {
   height: 100%;
+}
+
+.image-picker {
+  margin-bottom: 1rem;
 }
