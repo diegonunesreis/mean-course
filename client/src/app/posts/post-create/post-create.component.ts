@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { FormControl, FormGroup, NgForm, Validators } from "@angular/forms";
-import { ActivatedRoute, ParamMap, Route } from "@angular/router";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { ActivatedRoute, ParamMap } from "@angular/router";
 import { Post } from "../post.model";
 import { PostService } from "../post.service";
 import { Router } from "@angular/router";
@@ -74,6 +74,10 @@ export class PostCreateComponent implements OnInit {
     };
     reader.readAsDataURL(file);
 
+    reader.onloadend = () => {
+      console.log(this.imgPreview);
+    }
+
   }
 
   onSavePost() {
@@ -82,7 +86,7 @@ export class PostCreateComponent implements OnInit {
     }
     this.isLoading = true;
     if (!this.editMode) {
-      this.postsService.addPost(this.form.value.title, this.form.value.content);
+      this.postsService.addPost(this.form.value.title, this.form.value.content, this.form.value.image);
     }
     else {
       this.postsService.updatePost(this.postId!, this.form.value.title, this.form.value.content);

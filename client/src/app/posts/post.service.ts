@@ -44,15 +44,19 @@ export class PostService {
   }
 
   getPost(id: string) {
-    return this.http.get<{_id: string, title: string, content: string}>(`http://localhost:3000/api/posts/${id}`);
+    return this.http.get<{ _id: string, title: string, content: string }>(`http://localhost:3000/api/posts/${id}`);
   }
 
-  addPost(title: string, content: string) {
-    const post: Post = { id: "", title: title, content: content };
+  addPost(title: string, content: string, image: File) {
+    const postData = new FormData();
 
-    this.http.post<{ message: string, postId: string }>("http://localhost:3000/api/posts", post)
+    postData.append("title", title);
+    postData.append("content", content);
+    postData.append("image", image, title);
+
+    this.http.post<{ message: string, postId: string }>("http://localhost:3000/api/posts", postData)
       .subscribe((res) => {
-        post.id = res.postId;
+        const post: Post = { id: res.postId, title: title, content: content }
         this.posts.push(post);
         this.postsUpdated.next([...this.posts]);
       });
