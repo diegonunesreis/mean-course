@@ -14,15 +14,15 @@ const MIME_TYPE_MAP = {
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
     const isValid = MIME_TYPE_MAP[file.mimetype];
-    let error = new Error("Invalid mime type");
-    if (isValid) {
-      error = null;
+    let error = null;
+    if (!isValid) {
+      error = new Error("Invalid mime type");
     }
     callback(error, "images");
   },
   filename: (req, file, callback) => {
     const name = file.originalname.toLocaleLowerCase().split(' ').join('-');
-    const ext = MIME_TYPE_MAP;
+    const ext = MIME_TYPE_MAP[file.mimetype];
     callback(null, name + '-' + Date.now() + '.' + ext);
   }
 });
