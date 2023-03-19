@@ -1,4 +1,8 @@
 <app-header></app-header>
+<mat-progress-bar *ngIf="isLoading"
+  mode="indeterminate"
+  color="warn">
+</mat-progress-bar>
 <main>
   <router-outlet></router-outlet>
 </main>

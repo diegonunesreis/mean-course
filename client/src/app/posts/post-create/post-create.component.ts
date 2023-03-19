@@ -5,6 +5,7 @@ import { Post } from "../post.model";
 import { PostService } from "../post.service";
 import { Router } from "@angular/router";
 import { mimeType } from "./mime-type.validator";
+import { SharedService } from "src/app/shared/shared.service";
 
 @Component({
   selector: 'app-post-create',
@@ -23,6 +24,7 @@ export class PostCreateComponent implements OnInit {
 
   constructor(
     private postsService: PostService,
+    private sharedService: SharedService,
     private route: ActivatedRoute,
     private router: Router
   ) { }
@@ -64,6 +66,8 @@ export class PostCreateComponent implements OnInit {
   }
 
   onImagePicked(event: Event) {
+    this.sharedService.showProgress();
+
     const file = (event.target as HTMLInputElement).files[0];
     this.form.patchValue({ image: file });
     this.form.get('image').updateValueAndValidity();
@@ -75,9 +79,10 @@ export class PostCreateComponent implements OnInit {
     reader.readAsDataURL(file);
 
     reader.onloadend = () => {
-      console.log(this.imgPreview);
+      setTimeout(() => {
+        this.sharedService.hideProgress();
+      }, 1000);
     }
-
   }
 
   onSavePost() {
